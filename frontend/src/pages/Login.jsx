@@ -1,7 +1,10 @@
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -18,7 +21,21 @@ function Login() {
       );
 
       alert(res.data.message);
-      console.log(res.data);
+
+      const user = res.data.user;
+
+      // Save user in localStorage
+      localStorage.setItem("user", JSON.stringify(user));
+
+      // Redirect according to role
+      if (user.role === "admin") {
+        navigate("/admin");
+      } else if (user.role === "teacher") {
+        navigate("/teacher");
+      } else {
+        navigate("/student");
+      }
+
     } catch (err) {
       alert("Login Failed");
       console.log(err);
