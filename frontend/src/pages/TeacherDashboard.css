@@ -1,0 +1,156 @@
+.teacher-page {
+  min-height: 100vh;
+  background: #f4f6f9;
+  font-family: Arial, sans-serif;
+}
+
+.teacher-header {
+  background: #2f5f98;
+  color: white;
+  padding: 18px 35px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.teacher-header h1 {
+  margin: 0;
+}
+
+.logout-btn {
+  background: white;
+  color: #2f5f98;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.teacher-container {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 20px;
+  padding: 20px;
+}
+
+.teacher-sidebar {
+  background: white;
+  padding: 20px;
+  box-shadow: 0 0 8px #ccc;
+  border-radius: 8px;
+}
+
+.teacher-profile {
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 20px;
+}
+
+.teacher-avatar {
+  width: 90px;
+  height: 90px;
+  background: #dce8f7;
+  border-radius: 50%;
+  margin: auto;
+  font-size: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.teacher-menu {
+  margin-top: 20px;
+}
+
+.teacher-menu div {
+  padding: 12px;
+  color: #2f5f98;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+}
+
+.teacher-menu div:hover {
+  background: #eef4fb;
+}
+
+.teacher-main {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.stat-card {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 8px #ccc;
+  text-align: center;
+}
+
+.stat-card h2 {
+  margin: 5px 0;
+  color: #2f5f98;
+}
+
+.section-card {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 8px #ccc;
+}
+
+.section-card h2 {
+  margin-top: 0;
+  color: #333;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: left;
+}
+
+.table th {
+  background: #2f5f98;
+  color: white;
+}
+
+.quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.action-btn {
+  background: #2f5f98;
+  color: white;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.action-btn:hover {
+  background: #244b78;
+}
+
+.notice-box {
+  background: #eef4fb;
+  border-left: 5px solid #2f5f98;
+  padding: 15px;
+  margin-top: 10px;
+}
