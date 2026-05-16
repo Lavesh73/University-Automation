@@ -16,37 +16,20 @@ function ManageStudents() {
     phone: "",
   });
 
-  // HANDLE INPUT CHANGE
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // FETCH STUDENTS
   const fetchStudents = async () => {
-    try {
-      const res = await axios.get(
-        "http://localhost:5000/api/students"
-      );
-
-      setStudents(res.data);
-    } catch (error) {
-      console.log(error);
-    }
+    const res = await axios.get("http://localhost:5000/api/students");
+    setStudents(res.data);
   };
 
-  // ADD STUDENT
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      await axios.post(
-        "http://localhost:5000/api/students/add",
-        formData
-      );
-
+      await axios.post("http://localhost:5000/api/students/add", formData);
       alert("Student Added Successfully");
 
       setFormData({
@@ -60,27 +43,14 @@ function ManageStudents() {
 
       fetchStudents();
     } catch (error) {
-      console.log(error);
-
       alert("Error adding student");
+      console.log(error);
     }
   };
 
-  // DELETE STUDENT
   const deleteStudent = async (id) => {
-    try {
-      await axios.delete(
-        `http://localhost:5000/api/students/${id}`
-      );
-
-      alert("Student Deleted");
-
-      fetchStudents();
-    } catch (error) {
-      console.log(error);
-
-      alert("Error deleting student");
-    }
+    await axios.delete(`http://localhost:5000/api/students/${id}`);
+    fetchStudents();
   };
 
   useEffect(() => {
@@ -88,135 +58,83 @@ function ManageStudents() {
   }, []);
 
   return (
-    <div>
+    <div className="theme-page">
       <Navbar />
 
       <div style={{ display: "flex" }}>
         <Sidebar />
 
-        <div style={{ padding: "20px", width: "100%" }}>
-          <h1>Manage Students</h1>
+        <div style={{ flex: 1, padding: "0 18px 18px 0" }}>
+          <div className="glass-card" style={{ padding: "30px" }}>
+            <h1>Manage Students</h1>
 
-          {/* ADD STUDENT FORM */}
+            <form onSubmit={handleSubmit} style={formStyle}>
+              <input className="input-box" name="name" placeholder="Enter Name" value={formData.name} onChange={handleChange} required />
+              <input className="input-box" name="email" placeholder="Enter Email" value={formData.email} onChange={handleChange} required />
+              <input className="input-box" name="roll_no" placeholder="Enter Roll Number" value={formData.roll_no} onChange={handleChange} required />
+              <input className="input-box" name="department" placeholder="Enter Department" value={formData.department} onChange={handleChange} required />
+              <input className="input-box" name="semester" placeholder="Enter Semester" value={formData.semester} onChange={handleChange} required />
+              <input className="input-box" name="phone" placeholder="Enter Phone" value={formData.phone} onChange={handleChange} />
 
-          <form
-            onSubmit={handleSubmit}
-            style={{
-              display: "grid",
-              gap: "10px",
-              maxWidth: "400px",
-              marginBottom: "30px",
-            }}
-          >
-            <input
-              type="text"
-              name="name"
-              placeholder="Enter Name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-            />
+              <button className="primary-btn">Add Student</button>
+            </form>
 
-            <input
-              type="email"
-              name="email"
-              placeholder="Enter Email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-
-            <input
-              type="text"
-              name="roll_no"
-              placeholder="Enter Roll Number"
-              value={formData.roll_no}
-              onChange={handleChange}
-              required
-            />
-
-            <input
-              type="text"
-              name="department"
-              placeholder="Enter Department"
-              value={formData.department}
-              onChange={handleChange}
-              required
-            />
-
-            <input
-              type="text"
-              name="semester"
-              placeholder="Enter Semester"
-              value={formData.semester}
-              onChange={handleChange}
-              required
-            />
-
-            <input
-              type="text"
-              name="phone"
-              placeholder="Enter Phone"
-              value={formData.phone}
-              onChange={handleChange}
-            />
-
-            <button type="submit">
-              Add Student
-            </button>
-          </form>
-
-          {/* STUDENT TABLE */}
-
-          <table
-            border="1"
-            cellPadding="10"
-            style={{
-              width: "100%",
-              borderCollapse: "collapse",
-            }}
-          >
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Roll No</th>
-                <th>Department</th>
-                <th>Semester</th>
-                <th>Phone</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {students.map((student) => (
-                <tr key={student.id}>
-                  <td>{student.id}</td>
-                  <td>{student.name}</td>
-                  <td>{student.email}</td>
-                  <td>{student.roll_no}</td>
-                  <td>{student.department}</td>
-                  <td>{student.semester}</td>
-                  <td>{student.phone}</td>
-
-                  <td>
-                    <button
-                      onClick={() =>
-                        deleteStudent(student.id)
-                      }
-                    >
-                      Delete
-                    </button>
-                  </td>
+            <table style={tableStyle}>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Roll No</th>
+                  <th>Department</th>
+                  <th>Semester</th>
+                  <th>Phone</th>
+                  <th>Action</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+
+              <tbody>
+                {students.map((student) => (
+                  <tr key={student.id}>
+                    <td>{student.id}</td>
+                    <td>{student.name}</td>
+                    <td>{student.email}</td>
+                    <td>{student.roll_no}</td>
+                    <td>{student.department}</td>
+                    <td>{student.semester}</td>
+                    <td>{student.phone}</td>
+                    <td>
+                      <button
+                        className="secondary-btn"
+                        onClick={() => deleteStudent(student.id)}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
   );
 }
+
+const formStyle = {
+  display: "grid",
+  gridTemplateColumns: "repeat(3, 1fr)",
+  gap: "12px",
+  marginBottom: "25px",
+};
+
+const tableStyle = {
+  width: "100%",
+  borderCollapse: "collapse",
+  background: "rgba(255,255,255,0.55)",
+  borderRadius: "18px",
+  overflow: "hidden",
+};
 
 export default ManageStudents;

@@ -1,190 +1,165 @@
-import { useNavigate } from "react-router-dom";
-import "./TeacherDashboard.css";
+import { useEffect, useState } from "react";
+import axios from "axios";
+
+import Navbar from "../components/Navbar";
+import Sidebar from "../components/Sidebar";
 
 function TeacherDashboard() {
-  const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
+  const [students, setStudents] = useState([]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    navigate("/");
+  const fetchStudents = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/api/students");
+      setStudents(res.data);
+    } catch (error) {
+      console.log("Error fetching students:", error);
+    }
   };
 
+  useEffect(() => {
+    fetchStudents();
+  }, []);
+
+  const latestStudents = students.slice(0, 5);
+
   return (
-    <div className="teacher-page">
-      <div className="teacher-header">
-        <div>
-          <h1>Teacher Dashboard</h1>
-        </div>
+    <div className="theme-page">
+      <Navbar />
 
-        <button className="logout-btn" onClick={handleLogout}>
-          Logout
-        </button>
-      </div>
+      <div style={{ display: "flex" }}>
+        <Sidebar />
 
-      <div className="teacher-container">
-        <div className="teacher-sidebar">
-          <div className="teacher-profile">
-            <div className="teacher-avatar">👨‍🏫</div>
-            <h2>{user?.name || "Teacher"}</h2>
-            <p>{user?.email}</p>
-            <p>Department: Computer Science</p>
-          </div>
+        <div style={{ flex: 1, padding: "0 18px 18px 0" }}>
+          <div className="glass-card" style={{ padding: "30px" }}>
+            <h1>Teacher Dashboard</h1>
 
-          <div className="teacher-menu">
-            <div>🏠 Dashboard</div>
-            <div>📚 My Classes</div>
-            <div>📝 Assignments</div>
-            <div>✅ Attendance</div>
-            <div>📊 Marks Entry</div>
-            <div>📢 Notices</div>
-            <div>💬 Student Messages</div>
-            <div>📁 Study Material</div>
-            <div>📅 Timetable</div>
-          </div>
-        </div>
+            <p style={{ color: "#6b7280" }}>
+              Welcome {user?.name}. Manage classes, attendance, assignments,
+              marks, notices, resources, and student communication.
+            </p>
 
-        <div className="teacher-main">
-          <div className="stats-grid">
-            <div className="stat-card">
-              <h2>4</h2>
-              <p>Assigned Classes</p>
+            <div style={gridStyle}>
+              <Card title="Assigned Classes" value="4" />
+              <Card title="Total Students" value={students.length} />
+              <Card title="Assignments" value="8" />
+              <Card title="Messages" value="3" />
             </div>
 
-            <div className="stat-card">
-              <h2>120</h2>
-              <p>Total Students</p>
+            <div className="glass-card" style={sectionStyle}>
+              <h2>Latest Students</h2>
+
+              {latestStudents.length === 0 ? (
+                <p>No students found. Add students from Admin Panel.</p>
+              ) : (
+                <table style={tableStyle}>
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Name</th>
+                      <th>Roll No</th>
+                      <th>Department</th>
+                      <th>Semester</th>
+                      <th>Email</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {latestStudents.map((student) => (
+                      <tr key={student.id}>
+                        <td>{student.id}</td>
+                        <td>{student.name}</td>
+                        <td>{student.roll_no}</td>
+                        <td>{student.department}</td>
+                        <td>{student.semester}</td>
+                        <td>{student.email}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
             </div>
 
-            <div className="stat-card">
-              <h2>8</h2>
-              <p>Pending Assignments</p>
+            <div className="glass-card" style={sectionStyle}>
+              <h2>Today's Schedule</h2>
+
+              <table style={tableStyle}>
+                <thead>
+                  <tr>
+                    <th>Time</th>
+                    <th>Class</th>
+                    <th>Subject</th>
+                    <th>Room</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr>
+                    <td>09:00 AM</td>
+                    <td>B.Tech CSE 6th Sem</td>
+                    <td>Web Development</td>
+                    <td>Lab 1</td>
+                  </tr>
+
+                  <tr>
+                    <td>11:00 AM</td>
+                    <td>B.Tech CSE 4th Sem</td>
+                    <td>DBMS</td>
+                    <td>Room 204</td>
+                  </tr>
+
+                  <tr>
+                    <td>02:00 PM</td>
+                    <td>B.Tech CSE 2nd Sem</td>
+                    <td>Programming Fundamentals</td>
+                    <td>Room 105</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
 
-            <div className="stat-card">
-              <h2>3</h2>
-              <p>New Messages</p>
-            </div>
-          </div>
+            <div className="glass-card" style={sectionStyle}>
+              <h2>Quick Actions</h2>
 
-          <div className="section-card">
-            <h2>Today's Schedule</h2>
-
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>Time</th>
-                  <th>Class</th>
-                  <th>Subject</th>
-                  <th>Room</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                <tr>
-                  <td>09:00 AM - 10:00 AM</td>
-                  <td>B.Tech CSE 6th Sem</td>
-                  <td>Web Development</td>
-                  <td>Lab 1</td>
-                </tr>
-
-                <tr>
-                  <td>11:00 AM - 12:00 PM</td>
-                  <td>B.Tech CSE 4th Sem</td>
-                  <td>Database Management System</td>
-                  <td>Room 204</td>
-                </tr>
-
-                <tr>
-                  <td>02:00 PM - 03:00 PM</td>
-                  <td>B.Tech CSE 2nd Sem</td>
-                  <td>Programming Fundamentals</td>
-                  <td>Room 105</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div className="section-card">
-            <h2>Quick Actions</h2>
-
-            <div className="quick-actions">
-              <button className="action-btn">Mark Attendance</button>
-              <button className="action-btn">Upload Assignment</button>
-              <button className="action-btn">Upload Notes</button>
-              <button className="action-btn">Enter Marks</button>
-              <button className="action-btn">Send Notice</button>
-              <button className="action-btn">Message Students</button>
-            </div>
-          </div>
-
-          <div className="section-card">
-            <h2>Assigned Subjects</h2>
-
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>Subject Code</th>
-                  <th>Subject Name</th>
-                  <th>Class</th>
-                  <th>Total Students</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                <tr>
-                  <td>CS601</td>
-                  <td>Web Development</td>
-                  <td>CSE 6th Sem</td>
-                  <td>45</td>
-                </tr>
-
-                <tr>
-                  <td>CS402</td>
-                  <td>Database Management System</td>
-                  <td>CSE 4th Sem</td>
-                  <td>38</td>
-                </tr>
-
-                <tr>
-                  <td>CS201</td>
-                  <td>Programming Fundamentals</td>
-                  <td>CSE 2nd Sem</td>
-                  <td>37</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div className="section-card">
-            <h2>Recent Student Queries</h2>
-
-            <div className="notice-box">
-              <strong>Rahul Sharma:</strong> Sir, please upload DBMS assignment deadline.
+              <div style={buttonGrid}>
+                <button className="primary-btn">Mark Attendance</button>
+                <button className="primary-btn">Upload Assignment</button>
+                <button className="primary-btn">Upload Notes</button>
+                <button className="primary-btn">Enter Marks</button>
+                <button className="primary-btn">Send Notice</button>
+                <button className="primary-btn">Message Students</button>
+              </div>
             </div>
 
-            <div className="notice-box">
-              <strong>Anjali Verma:</strong> Sir, attendance is not updated for yesterday's lab.
-            </div>
+            <div className="glass-card" style={sectionStyle}>
+              <h2>Assigned Subjects</h2>
 
-            <div className="notice-box">
-              <strong>Mohit Singh:</strong> Sir, please share notes for normalization topic.
-            </div>
-          </div>
+              <table style={tableStyle}>
+                <thead>
+                  <tr>
+                    <th>Subject Code</th>
+                    <th>Subject</th>
+                    <th>Class</th>
+                    <th>Students</th>
+                  </tr>
+                </thead>
 
-          <div className="section-card">
-            <h2>Important Reminders</h2>
+                <tbody>
+                  <tr>
+                    <td>CS601</td>
+                    <td>Web Development</td>
+                    <td>CSE 6th Sem</td>
+                    <td>{students.length}</td>
+                  </tr>
 
-            <div className="notice-box">
-              Submit internal marks before the end of this week.
-            </div>
-
-            <div className="notice-box">
-              Upload study material for upcoming mid-term examination.
-            </div>
-
-            <div className="notice-box">
-              Verify attendance records for all assigned classes.
+                  <tr>
+                    <td>CS402</td>
+                    <td>Database Management System</td>
+                    <td>CSE 4th Sem</td>
+                    <td>{students.length}</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -192,5 +167,40 @@ function TeacherDashboard() {
     </div>
   );
 }
+
+function Card({ title, value }) {
+  return (
+    <div className="glass-card" style={{ padding: "24px", textAlign: "center" }}>
+      <h2 style={{ color: "#7c4dff" }}>{value}</h2>
+      <p>{title}</p>
+    </div>
+  );
+}
+
+const gridStyle = {
+  display: "grid",
+  gridTemplateColumns: "repeat(4, 1fr)",
+  gap: "18px",
+  marginTop: "25px",
+};
+
+const sectionStyle = {
+  padding: "24px",
+  marginTop: "25px",
+};
+
+const buttonGrid = {
+  display: "grid",
+  gridTemplateColumns: "repeat(3, 1fr)",
+  gap: "14px",
+};
+
+const tableStyle = {
+  width: "100%",
+  borderCollapse: "collapse",
+  background: "rgba(255,255,255,0.65)",
+  borderRadius: "18px",
+  overflow: "hidden",
+};
 
 export default TeacherDashboard;
