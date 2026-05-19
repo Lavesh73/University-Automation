@@ -181,5 +181,39 @@ router.get("/sessions", (req, res) => {
     res.status(200).json(result);
   });
 });
+// GET STUDENT OVERALL ATTENDANCE SUMMARY
+router.get("/student-summary/:student_id", (req, res) => {
+  const studentId = req.params.student_id;
 
+  const sql = `
+    SELECT 
+      COUNT(*) AS total_classes,
+      SUM(status = 'Present') AS attended_classes,
+      SUM(status = 'Absent') AS absent_classes
+    FROM attendance_records
+    WHERE student_id = ?
+  `;
+
+  db.query(sql, [studentId], (err, result) => {
+    if (err) {
+      return res.status(500).json({
+        message: "Error fetching student attendance",
+        error: err.sqlMessage,
+      });
+    }
+
+    const total = result[0].total_classes || 0;
+    const attended = result[0].attended_classes || 0;
+    const absent = result[0].absent_classes || 0;
+
+    const percentage = total === 0 ? 0 : Math.round((attended / total) * 100);
+
+    res.status(200).json({
+      total_classes: total,
+      attended_classes: attended,
+      absent_classes: absent,
+      percentage,
+    });
+  });
+});
 module.exports = router;

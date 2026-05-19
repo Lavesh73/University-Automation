@@ -69,5 +69,27 @@ router.delete("/:id", (req, res) => {
     });
   });
 });
+// GET STUDENT BY EMAIL
+router.get("/by-email/:email", (req, res) => {
+  const email = req.params.email;
 
+  const sql = "SELECT * FROM students WHERE email = ?";
+
+  db.query(sql, [email], (err, result) => {
+    if (err) {
+      return res.status(500).json({
+        message: "Error fetching student",
+        error: err.sqlMessage,
+      });
+    }
+
+    if (result.length === 0) {
+      return res.status(404).json({
+        message: "Student not found",
+      });
+    }
+
+    res.status(200).json(result[0]);
+  });
+});
 module.exports = router;

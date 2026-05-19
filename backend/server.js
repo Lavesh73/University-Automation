@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const http = require("http");
+const path = require("path");
 const { Server } = require("socket.io");
 
 const db = require("./db");
@@ -10,6 +11,7 @@ const studentRoutes = require("./routes/studentRoutes");
 const materialRoutes = require("./routes/materialRoutes");
 const chatRoutes = require("./routes/chatRoutes");
 const attendanceRoutes = require("./routes/attendanceRoutes");
+const accountRoutes = require("./routes/accountRoutes");
 
 const app = express();
 const server = http.createServer(app);
@@ -23,13 +25,14 @@ const io = new Server(server, {
 
 app.use(cors());
 app.use(express.json());
-app.use("/uploads", express.static("uploads"));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/students", studentRoutes);
 app.use("/api/materials", materialRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/attendance", attendanceRoutes);
+app.use("/api/account", accountRoutes);
 
 app.get("/", (req, res) => {
   res.send("Backend Running Successfully");

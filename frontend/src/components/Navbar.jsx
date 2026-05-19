@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 function Navbar() {
@@ -9,18 +10,59 @@ function Navbar() {
     navigate("/");
   };
 
+  const handleDeleteAccount = async () => {
+    const confirmDelete = window.confirm(
+      "Are you sure? This will permanently delete your account and related data."
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      await axios.delete(`http://localhost:5000/api/account/delete/${user.id}`);
+
+      localStorage.removeItem("user");
+
+      alert("Account deleted successfully");
+      navigate("/");
+    } catch (error) {
+      alert("Account delete failed");
+      console.log(error);
+    }
+  };
+
   return (
     <div style={navbarStyle}>
-      <div>
-        <h2 style={{ margin: 0 }}>University Automation System</h2>
-        <p style={{ margin: "6px 0 0", color: "#6b7280" }}>
-          Welcome: {user?.name} ({user?.role})
-        </p>
+      <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
+        <img
+          src={
+            user?.profile_image
+              ? `http://localhost:5000/uploads/${user.profile_image}`
+              : "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+          }
+          alt="profile"
+          style={profileImg}
+        />
+
+        <div>
+          <h2 style={{ margin: 0 }}>University Automation System</h2>
+
+          <p style={{ margin: "6px 0 0", color: "#6b7280" }}>
+            Welcome: {user?.name} ({user?.role})
+          </p>
+        </div>
       </div>
 
-      <button className="primary-btn" onClick={handleLogout}>
-        Logout
-      </button>
+      <div style={{ display: "flex", gap: "10px" }}>
+        <button className="secondary-btn" onClick={handleLogout}>
+          Logout
+        </button>
+
+        {user?.role !== "admin" && (
+          <button style={deleteBtn} onClick={handleDeleteAccount}>
+            Delete Account
+          </button>
+        )}
+      </div>
     </div>
   );
 }
@@ -36,6 +78,24 @@ const navbarStyle = {
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
+};
+
+const profileImg = {
+  width: "55px",
+  height: "55px",
+  borderRadius: "50%",
+  objectFit: "cover",
+  border: "3px solid white",
+};
+
+const deleteBtn = {
+  background: "rgba(255,0,0,0.12)",
+  color: "red",
+  border: "1px solid rgba(255,0,0,0.25)",
+  borderRadius: "14px",
+  padding: "12px 18px",
+  fontWeight: "700",
+  cursor: "pointer",
 };
 
 export default Navbar;
